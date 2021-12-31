@@ -1,0 +1,38 @@
+{
+  "name": "immet",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "exports": "./dist/immet.modern.js",
+  "source": "src/immet.ts",
+  "main": "./dist/immet.cjs",
+  "module": "./dist/immet.module.js",
+  "unpkg": "./dist/immet.umd.js",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch",
+    "test": "jest ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MinJieLiu/immet.git"
+  },
+  "keywords": [
+    "immutable",
+    "immet"
+  ],
+  "author": "MinJieLiu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MinJieLiu/immet/issues"
+  },
+  "homepage": "https://github.com/MinJieLiu/immet#readme",
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.5",
+    "microbundle": "^0.14.2",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^9.1.1"
+  }
+}
