@@ -1,103 +1,86 @@
-import type KeyPath from "./KeyPath";
-import type Resolve from "./Resolve";
+import type { DeleteFnPath, KeyName, KeyPath, Resolve, Resolve1, Updater } from "./types";
 
-export type NullableKeys<T> = {
-  [K in keyof T]-?: undefined extends T[K] ? K : never;
-}[keyof T];
-
-export type Updater<T> = (prev: T) => T;
-
-function shadowCopy<T>(state: T): T {
-  if (Array.isArray(state)) {
-    return [...state] as unknown as T;
-  }
-  return { ...state };
+function typeOf<T>(obj: T) {
+  return (toString.call(obj) as string).slice(8, -1);
 }
 
-/**
- * 更新返回新对象
- */
-function baseUpdate<S, KS extends keyof S>(
-  state: S,
-  keyPath: KS,
-  updater: Updater<S[KS]>
-): S {
-  const value = updater(state[keyPath]);
-  if (value === state[keyPath]) {
+function shadowAssign<S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Resolve1<S, KS>) {
+  if (Array.isArray(state)) {
+    const result = [...state] as unknown as S;
+    result[keyPath as number] = value;
+    return result;
+  }
+  if (typeOf(state) === "Map") {
+    return new Map(state as unknown as Map<unknown, unknown>).set(keyPath, value);
+  }
+  return { ...state, [keyPath as string | symbol]: value };
+}
+
+function baseUpdate<S, KS extends KeyName<S>>(state: S, keyPath: KS, updater: Updater<Resolve1<S, KS>>): S {
+  const origin =
+    typeOf(state) === "Map"
+      ? ((state as unknown as Map<unknown, unknown>).get(keyPath) as Resolve1<S, KS>)
+      : state[keyPath as string];
+
+  const value = updater(origin);
+  if (value === origin) {
     return state;
   }
-  const result = shadowCopy(state);
-  result[keyPath] = value;
-  return result;
+  return shadowAssign(state, keyPath, value) as S;
 }
 
-/**
- * 根据路径初始化对应的值
- */
-function initKeyPath(key: string | number) {
-  return Number.isInteger(key) ? [] : {};
+function initKeyPath(key: string | number | symbol, value: unknown) {
+  if (Number.isInteger(key)) {
+    const result = [] as unknown[];
+    result[key] = value;
+    return result;
+  }
+  return {
+    [key]: value,
+  };
 }
 
-/**
- * 深层次更新返回新对象
- */
-function baseUpdateIn<S, KS extends KeyPath<S>>(
-  state: S,
-  keyPath: KS,
-  updater: Updater<Resolve<S, KS>>
-): S {
+function baseUpdateIn<S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: Updater<Resolve<S, KS>>): S {
   let index = -1;
-  // 路径上的值
-  const pathState = [state] as Resolve<S, KS>[];
-  // 路径上最后一个值
   let lastItem;
-  const pathLength = keyPath.length as number;
+  const pathState = [state] as Resolve<S, KS>[];
+  const pathLength = (keyPath as unknown as []).length as number;
 
   while (++index < pathLength) {
     const currKeyPath = keyPath[index] as string;
-    // 最近一次放入的值
-    const last = pathState[index];
-    // 当前
-    const cursor = last?.[currKeyPath];
-
-    // 获取末尾具体值
+    const parent = pathState[index];
+    const cursor = parent?.[currKeyPath];
     if (index === pathLength - 1) {
       lastItem = cursor;
       break;
     }
     pathState.push(cursor);
   }
-
-  // 更新结果
   const value = updater(lastItem);
-  // 若值不发生改变，则不操作数据
   if (lastItem === value) {
     return state;
   }
 
   let result = value as S;
   let resultIndex = pathLength;
-  // 组装结果（倒序）
+  // reverse order
   while (resultIndex-- > 0) {
-    const origin = pathState[resultIndex];
-    const currKeyPath = keyPath[resultIndex] as string;
+    const origin = pathState[resultIndex] as S;
+    const currKeyPath = keyPath[resultIndex] as KeyName<S>;
     const current =
-      origin !== undefined ? shadowCopy(origin) : initKeyPath(currKeyPath);
-    current[currKeyPath] = result;
+      origin !== undefined
+        ? shadowAssign(origin, currKeyPath, result as Resolve1<S, KeyName<S>>)
+        : initKeyPath(currKeyPath as string, result);
     result = current as S;
   }
   return result;
 }
 
 export const immet = {
-  $set: <S, KS extends keyof S>(state: S, keyPath: KS, value: S[KS]): S => {
+  $set: <S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Resolve1<S, KS>): S => {
     return baseUpdate(state, keyPath, () => value);
   },
-  $setIn: <S, KS extends KeyPath<S>>(
-    state: S,
-    keyPath: KS,
-    value: Resolve<S, KS>
-  ): S => {
+  $setIn: <S, KS extends KeyPath<S>>(state: S, keyPath: KS, value: Resolve<S, KS>): S => {
     return baseUpdateIn(state, keyPath, () => value);
   },
 
@@ -107,32 +90,43 @@ export const immet = {
     }
     return { ...state, ...values };
   },
-  $mergeIn: <S, KS extends KeyPath<S>>(
-    state: S,
-    keyPath: KS,
-    values: Partial<Resolve<S, KS>>
-  ): S => {
+  $mergeIn: <S, KS extends KeyPath<S>>(state: S, keyPath: KS, values: Partial<Resolve<S, KS>>): S => {
     return baseUpdateIn(state, keyPath, (prev) => immet.$merge(prev, values));
   },
 
   $update: baseUpdate,
-  $updateIn: <S, KS extends KeyPath<S>>(
-    state: S,
-    keyPath: KS,
-    updater: Updater<Resolve<S, KS>>
-  ): S => {
+  $updateIn: <S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: Updater<Resolve<S, KS>>): S => {
     return baseUpdateIn(state, keyPath, updater);
   },
 
-  $delete: <S>(
-    state: S,
-    keyPath: S extends [] ? number : NullableKeys<S>
-  ): S => {
+  $delete: <S>(state: S, keyPath: DeleteFnPath<S>): S => {
     if (Array.isArray(state)) {
+      if (Array.isArray(keyPath)) {
+        return state.filter((n, i) => !keyPath.includes(i)) as unknown as S;
+      }
       return immet.$splice(state, keyPath as number, 1) as unknown as S;
     }
-    const { [keyPath]: removed, ...result } = state;
-    return result as S;
+
+    if (typeOf(state) === "Map") {
+      const result = new Map(state as unknown as Map<unknown, unknown>);
+      if (Array.isArray(keyPath)) {
+        keyPath.forEach((key) => {
+          result.delete(key);
+        });
+      } else {
+        result.delete(keyPath);
+      }
+      return result as unknown as S;
+    }
+
+    const result = {} as S;
+    const keys = Object.keys(state);
+    keys.forEach((key) => {
+      if (Array.isArray(keyPath) ? !keyPath.includes(key) : keyPath !== key) {
+        result[key] = state[key];
+      }
+    });
+    return result;
   },
 
   $push: <S>(state: S[], ...values: S[]): S[] => {
@@ -147,12 +141,7 @@ export const immet = {
   $unshift: <S>(state: S[], ...values: S[]): S[] => {
     return values.concat(state);
   },
-  $splice: <S>(
-    state: S[],
-    start: number,
-    deleteCount: number,
-    ...values: S[]
-  ): S[] => {
+  $splice: <S>(state: S[], start: number, deleteCount: number, ...values: S[]): S[] => {
     const next = [...state];
     next.splice(start, deleteCount, ...values);
     return next;
