@@ -1,4 +1,4 @@
-import { immet } from "../src/immet";
+import * as immet from "../src/immet";
 
 test("Test $set", () => {
   interface DemoType {
