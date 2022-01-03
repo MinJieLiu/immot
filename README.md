@@ -204,8 +204,8 @@ node index.mjs
 
 [npm-image]: https://img.shields.io/npm/v/immot.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/immot
-[build-image]: https://img.shields.io/travis/MinJieLiu/immot.svg?style=flat-square
-[build-url]: https://travis-ci.org/MinJieLiu/immot
+[build-image]: https://github.com/MinJieLiu/immot/actions/workflows/node.js.yml/badge.svg
+[build-url]: https://github.com/MinJieLiu/immot/actions
 [coveralls-image]: https://img.shields.io/coveralls/MinJieLiu/immot.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/MinJieLiu/immot
 [downloads-image]: http://img.shields.io/npm/dm/immot.svg?style=flat-square
