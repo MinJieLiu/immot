@@ -1,7 +1,7 @@
 # immot
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
+[![Build status][build-image]][build-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![Downloads][downloads-image]][downloads-url]
 [![Minified size][min-size-image]][bundlephobia-url]
@@ -204,8 +204,8 @@ node index.mjs
 
 [npm-image]: https://img.shields.io/npm/v/immot.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/immot
-[travis-image]: https://img.shields.io/travis/MinJieLiu/immot.svg?style=flat-square
-[travis-url]: https://travis-ci.org/MinJieLiu/immot
+[build-image]: https://img.shields.io/travis/MinJieLiu/immot.svg?style=flat-square
+[build-url]: https://travis-ci.org/MinJieLiu/immot
 [coveralls-image]: https://img.shields.io/coveralls/MinJieLiu/immot.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/MinJieLiu/immot
 [downloads-image]: http://img.shields.io/npm/dm/immot.svg?style=flat-square

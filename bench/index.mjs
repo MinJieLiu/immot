@@ -30,7 +30,7 @@ new benchmark.Suite()
   .add("immutability-helper", () => {
     update(data1, { name: { $set: "tom" } });
   })
-  .add("Immet", () => {
+  .add("Immot", () => {
     immot.$set(data1, "name", "tom");
   })
   .on("cycle", (e) => console.log("  " + e.target))
@@ -64,7 +64,7 @@ new benchmark.Suite()
   .add("immutability-helper", () => {
     update(data2, { info: { user: { tom: { $set: "bad" } } } });
   })
-  .add("Immet", () => {
+  .add("Immot", () => {
     immot.$setIn(data2, ["info", "user", "tom"], "bad");
   })
   .on("cycle", (e) => console.log("  " + e.target))
@@ -94,7 +94,7 @@ new benchmark.Suite()
   .add("immutability-helper", () => {
     update(data3, { info: { [2000]: { $set: 0 } } });
   })
-  .add("Immet", () => {
+  .add("Immot", () => {
     immot.$setIn(data3, ["info", 2000], 0);
   })
   .on("cycle", (e) => console.log("  " + e.target))
