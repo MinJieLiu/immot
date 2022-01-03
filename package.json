@@ -1,13 +1,14 @@
 {
   "name": "immot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
-  "description": "",
+  "description": "Create a new copy without changing the original data.",
   "exports": "./dist/immot.modern.js",
   "source": "src/immot.ts",
   "main": "./dist/immot.cjs",
   "module": "./dist/immot.module.js",
   "unpkg": "./dist/immot.umd.js",
+  "types": "./dist/immot.d.ts",
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
@@ -37,6 +38,7 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "tests"
   ]
 }

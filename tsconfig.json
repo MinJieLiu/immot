@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "ESNext",
-      "dom"
-    ],
+    "lib": ["ESNext", "dom"],
     "skipLibCheck": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
@@ -21,7 +18,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "isolatedModules": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
