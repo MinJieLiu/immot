@@ -1,4 +1,4 @@
-import type { DeleteFnPath, KeyName, KeyPath, Resolve, Resolve1, Updater } from "./types";
+import type { DeleteFnPath, KeyName, KeyPath, Resolve, Resolve1, Updater } from './types';
 
 function isMap<T>(obj: T) {
   return obj instanceof Map;
