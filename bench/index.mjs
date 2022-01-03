@@ -2,7 +2,7 @@ import benchmark from "benchmark";
 import { produce, setAutoFreeze } from "immer";
 import * as Immutable from "immutable";
 import update from "immutability-helper";
-import * as immet from "../dist/immet.module.js";
+import * as immot from "../dist/immot.module.js";
 
 setAutoFreeze(false);
 
@@ -31,7 +31,7 @@ new benchmark.Suite()
     update(data1, { name: { $set: "tom" } });
   })
   .add("Immet", () => {
-    immet.$set(data1, "name", "tom");
+    immot.$set(data1, "name", "tom");
   })
   .on("cycle", (e) => console.log("  " + e.target))
   .run();
@@ -65,7 +65,7 @@ new benchmark.Suite()
     update(data2, { info: { user: { tom: { $set: "bad" } } } });
   })
   .add("Immet", () => {
-    immet.$setIn(data2, ["info", "user", "tom"], "bad");
+    immot.$setIn(data2, ["info", "user", "tom"], "bad");
   })
   .on("cycle", (e) => console.log("  " + e.target))
   .run();
@@ -95,7 +95,7 @@ new benchmark.Suite()
     update(data3, { info: { [2000]: { $set: 0 } } });
   })
   .add("Immet", () => {
-    immet.$setIn(data3, ["info", 2000], 0);
+    immot.$setIn(data3, ["info", 2000], 0);
   })
   .on("cycle", (e) => console.log("  " + e.target))
   .run();

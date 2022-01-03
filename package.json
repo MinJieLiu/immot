@@ -1,13 +1,13 @@
 {
-  "name": "immet",
-  "version": "0.1.0",
+  "name": "immot",
+  "version": "0.2.0",
   "type": "module",
   "description": "",
-  "exports": "./dist/immet.modern.js",
-  "source": "src/immet.ts",
-  "main": "./dist/immet.cjs",
-  "module": "./dist/immet.module.js",
-  "unpkg": "./dist/immet.umd.js",
+  "exports": "./dist/immot.modern.js",
+  "source": "src/immot.ts",
+  "main": "./dist/immot.cjs",
+  "module": "./dist/immot.module.js",
+  "unpkg": "./dist/immot.umd.js",
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
@@ -15,18 +15,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MinJieLiu/immet.git"
+    "url": "git+https://github.com/MinJieLiu/immot.git"
   },
   "keywords": [
     "immutable",
-    "immet"
+    "immot"
   ],
   "author": "MinJieLiu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MinJieLiu/immet/issues"
+    "url": "https://github.com/MinJieLiu/immot/issues"
   },
-  "homepage": "https://github.com/MinJieLiu/immet#readme",
+  "homepage": "https://github.com/MinJieLiu/immot#readme",
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "jest": "^27.4.5",

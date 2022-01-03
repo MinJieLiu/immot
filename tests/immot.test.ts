@@ -1,4 +1,4 @@
-import * as immet from '../src/immet';
+import * as immot from '../src/immot';
 
 test('Test $set', () => {
   interface DemoType {
@@ -26,7 +26,7 @@ test('Test $set', () => {
     },
   };
 
-  const demo1 = immet.$set(demoData.info, 'products', ['apple']);
+  const demo1 = immot.$set(demoData.info, 'products', ['apple']);
   expect(demo1).toEqual({
     sales: {
       users: {
@@ -40,25 +40,25 @@ test('Test $set', () => {
   expect(demo1.sales).toBe(demoData.info.sales);
   expect(demo1.products).not.toBe(demoData.info.products);
 
-  const demo2 = immet.$set(demoData.info.products, 1, 'apple');
+  const demo2 = immot.$set(demoData.info.products, 1, 'apple');
   expect(demo2).toEqual(['phone', 'apple', 'milk']);
   expect(demo2).not.toBe(demoData.info.products);
 
-  const demo3 = immet.$set(demoData.info.sales.users, 'tony', 'ok');
+  const demo3 = immot.$set(demoData.info.sales.users, 'tony', 'ok');
   expect(demo3).toEqual({
     tom: 'good',
     tony: 'ok',
   });
   expect(demo3).not.toBe(demoData.info.sales.users);
 
-  const demo4 = immet.$set(demo3, 'tony', 'ok');
+  const demo4 = immot.$set(demo3, 'tony', 'ok');
   expect(demo4).toBe(demo3);
 
   const demoDataMap1 = new Map([
     ['tom', 1],
     ['jerry', 2],
   ]);
-  const demoMap1 = immet.$set(demoDataMap1, 'tom', 2);
+  const demoMap1 = immot.$set(demoDataMap1, 'tom', 2);
   expect(demoMap1).not.toBe(demoDataMap1);
   expect(demoMap1.get('tom')).not.toBe(demoDataMap1.get('tom'));
   expect(demoMap1.get('jerry')).toBe(demoDataMap1.get('jerry'));
@@ -77,7 +77,8 @@ test('Test $setIn', () => {
     },
   };
 
-  const demo1 = immet.$setIn(demoData, ['info', 'sales', 'users', 'tom'], 'bad');
+  const demo1 = immot.$setIn(demoData, ['info', 'sales', 'users', 'tom'], 'bad');
+
   expect(demo1).toEqual({
     info: {
       sales: {
@@ -96,7 +97,7 @@ test('Test $setIn', () => {
   expect(demo1.info.products).toBe(demoData.info.products);
   expect(demo1.info.sales.money).toBe(demoData.info.sales.money);
 
-  const demo2 = immet.$setIn(demoData, ['info', 'sales', 'money', 1], 500);
+  const demo2 = immot.$setIn(demoData, ['info', 'sales', 'money', 1], 500);
 
   expect(demo2).toEqual({
     info: {
@@ -115,9 +116,20 @@ test('Test $setIn', () => {
   expect(demo2.info.sales.users).toBe(demoData.info.sales.users);
   expect(demoData.info.sales.money).toBeUndefined();
 
-  const demo3 = immet.$setIn(demo2, ['info', 'sales', 'money', 1], 500);
-
+  const demo3 = immot.$setIn(demo2, ['info', 'sales', 'money', 1], 500);
   expect(demo3).toBe(demo2);
+
+  const profile = {
+    userList: [{ username: 'jack' }],
+  };
+
+  const nextProfile = immot.$setIn(profile, ['userList', 1, 'username'], 'tom');
+
+  expect(nextProfile).toEqual({
+    userList: [{ username: 'jack' }, { username: 'tom' }],
+  });
+  expect(nextProfile.userList).not.toBe(profile.userList);
+  expect(nextProfile.userList[0]).toBe(profile.userList[0]);
 
   const demoDataMap = {
     info: new Map([
@@ -126,7 +138,7 @@ test('Test $setIn', () => {
     ]),
   };
 
-  const demoMap1 = immet.$setIn(demoDataMap, ['info', 'jack'], 20);
+  const demoMap1 = immot.$setIn(demoDataMap, ['info', 'jack'], 20);
 
   expect(demoMap1).toEqual({
     info: new Map([
@@ -143,7 +155,7 @@ test('Test $setIn', () => {
     property: [1],
   };
 
-  const demoMap2 = immet.$setIn(demoDataMap2, ['info', 'jack', 'money'], 20);
+  const demoMap2 = immot.$setIn(demoDataMap2, ['info', 'jack', 'money'], 20);
 
   expect(demoMap2).toEqual({
     info: new Map([
@@ -175,13 +187,13 @@ test('Test $setIn', () => {
     },
   };
 
-  const demo4 = immet.$setIn(demoData4, ['info', 'jack'], undefined);
+  const demo4 = immot.$setIn(demoData4, ['info', 'jack'], undefined);
   expect(demo4).toEqual({
     info: {
       jack: undefined,
     },
   });
-  const demo5 = immet.$setIn(demo4, ['info', 'tom', 'money'], 10);
+  const demo5 = immot.$setIn(demo4, ['info', 'tom', 'money'], 10);
   expect(demo5).toEqual({
     info: {
       jack: undefined,
@@ -198,7 +210,7 @@ test('Test $merge', () => {
     jack: undefined as string | undefined,
   };
 
-  const demo1 = immet.$merge(demoData, { tom: 'bad', jack: 'good' });
+  const demo1 = immot.$merge(demoData, { tom: 'bad', jack: 'good' });
   expect(demo1).toEqual({
     tom: 'bad',
     jack: 'good',
@@ -207,7 +219,7 @@ test('Test $merge', () => {
 
   const demoData1 = [1, 2, 3, 4];
 
-  const demo2 = immet.$merge(demoData1, [5, 6]);
+  const demo2 = immot.$merge(demoData1, [5, 6]);
   expect(demo2).toEqual([5, 6, 3, 4]);
   expect(demo2).not.toBe(demoData1);
 });
@@ -222,7 +234,7 @@ test('Test $mergeIn', () => {
     },
   };
 
-  const demo1 = immet.$mergeIn(demoData, ['info', 'users'], {
+  const demo1 = immot.$mergeIn(demoData, ['info', 'users'], {
     tom: 'bad',
   });
   expect(demo1).toEqual({
@@ -238,7 +250,7 @@ test('Test $mergeIn', () => {
   expect(demo1.info.users).not.toBe(demoData.info.users);
   expect(demo1.info.money).toBe(demoData.info.money);
 
-  const demo2 = immet.$mergeIn(demoData, ['info', 'money'], [400]);
+  const demo2 = immot.$mergeIn(demoData, ['info', 'money'], [400]);
 
   expect(demo2).toEqual({
     info: {
@@ -256,7 +268,7 @@ test('Test $update', () => {
     money: 1,
   };
 
-  const demo1 = immet.$update(demoData, 'money', (prev) => prev + 1);
+  const demo1 = immot.$update(demoData, 'money', (prev) => prev + 1);
   expect(demo1).toEqual({
     money: 2,
   });
@@ -272,7 +284,7 @@ test('Test $updateIn', () => {
     ],
   };
 
-  const demo1 = immet.$updateIn(demoData, ['money', 0, 'user'], (prev) => `${prev} & jerry`);
+  const demo1 = immot.$updateIn(demoData, ['money', 0, 'user'], (prev) => `${prev} & jerry`);
   expect(demo1).toEqual({
     money: [
       {
@@ -282,7 +294,7 @@ test('Test $updateIn', () => {
   });
   expect(demo1).not.toBe(demoData);
 
-  const demo2 = immet.$updateIn(demoData, ['money', 1, 'user'], () => 'jerry');
+  const demo2 = immot.$updateIn(demoData, ['money', 1, 'user'], () => 'jerry');
   expect(demo2).toEqual({
     money: [
       {
@@ -303,18 +315,18 @@ test('Test $delete', () => {
     old: 12 as number | undefined,
   };
 
-  const demo1 = immet.$delete(demoData.money, 1);
+  const demo1 = immot.$delete(demoData.money, 1);
   expect(demo1).toEqual([1, 3]);
   expect(demo1).not.toBe(demoData.money);
 
-  const demo2 = immet.$delete(demoData, 'old');
+  const demo2 = immot.$delete(demoData, 'old');
   expect(demo2).toEqual({
     money: [1, 2, 3],
   });
   expect(demo2).not.toBe(demoData);
   expect(demo2.money).toBe(demoData.money);
 
-  const demo3 = immet.$delete(demoData.money, [0, 2]);
+  const demo3 = immot.$delete(demoData.money, [0, 2]);
 
   expect(demo3).toEqual([2]);
   expect(demo3).not.toBe(demoData.money);
@@ -324,7 +336,7 @@ test('Test $delete', () => {
     old: 12 as number | undefined,
   };
 
-  const demo4 = immet.$delete(demoData2, ['money', 'old']);
+  const demo4 = immot.$delete(demoData2, ['money', 'old']);
   expect(demo4).toEqual({});
   expect(demo4).not.toBe(demoData2);
 
@@ -333,21 +345,21 @@ test('Test $delete', () => {
     ['jerry', 2],
   ]);
 
-  const demo5 = immet.$delete(demoData3, 'tom');
+  const demo5 = immot.$delete(demoData3, 'tom');
   expect(demo5).toEqual(new Map([['jerry', 2]]));
 
-  const demo6 = immet.$delete(demoData3, ['tom', 'jerry']);
+  const demo6 = immot.$delete(demoData3, ['tom', 'jerry']);
   expect(demo6).toEqual(new Map());
 });
 
 test('Test $push', () => {
   const demoData = [1, 2, 3];
 
-  const demo1 = immet.$push(demoData, 4);
+  const demo1 = immot.$push(demoData, 4);
   expect(demo1).toEqual([1, 2, 3, 4]);
   expect(demo1).not.toBe(demoData);
 
-  const demo2 = immet.$push(demoData, 4, 5);
+  const demo2 = immot.$push(demoData, 4, 5);
   expect(demo2).toEqual([1, 2, 3, 4, 5]);
   expect(demo1).not.toBe(demoData);
   expect(demo2).not.toBe(demo1);
@@ -356,7 +368,7 @@ test('Test $push', () => {
 test('Test $pop', () => {
   const demoData = [1, 2, 3];
 
-  const demo1 = immet.$pop(demoData);
+  const demo1 = immot.$pop(demoData);
   expect(demo1).toEqual([1, 2]);
   expect(demo1).not.toBe(demoData);
 });
@@ -364,7 +376,7 @@ test('Test $pop', () => {
 test('Test $shift', () => {
   const demoData = [1, 2, 3];
 
-  const demo1 = immet.$shift(demoData);
+  const demo1 = immot.$shift(demoData);
   expect(demo1).toEqual([2, 3]);
   expect(demo1).not.toBe(demoData);
 });
@@ -372,7 +384,7 @@ test('Test $shift', () => {
 test('Test $unshift', () => {
   const demoData = [1, 2, 3];
 
-  const demo1 = immet.$unshift(demoData, 0);
+  const demo1 = immot.$unshift(demoData, 0);
   expect(demo1).toEqual([0, 1, 2, 3]);
   expect(demo1).not.toBe(demoData);
 });
@@ -380,9 +392,13 @@ test('Test $unshift', () => {
 test('Test $splice', () => {
   const demoData = [1, 2, 3];
 
-  const demo1 = immet.$splice(demoData, 1, 0, 1.5);
+  const demo1 = immot.$splice(demoData, 1, 0, 1.5);
   expect(demo1).toEqual([1, 1.5, 2, 3]);
   expect(demo1).not.toBe(demoData);
+
+  const demo2 = immot.$splice(demoData, 1, 0, 10, 20);
+  expect(demo2).toEqual([1, 10, 20, 2, 3]);
+  expect(demo2).not.toBe(demoData);
 });
 
 test('Test todo list', () => {
@@ -398,7 +414,7 @@ test('Test todo list', () => {
     ] as TodoItem[],
   };
   // add
-  const demo1 = immet.$update(state, 'todoList', (list) => immet.$push(list, { title: 'B' }));
+  const demo1 = immot.$update(state, 'todoList', (list) => immot.$push(list, { title: 'B' }));
   expect(demo1).toEqual({
     todoList: [
       {
@@ -412,7 +428,7 @@ test('Test todo list', () => {
   expect(demo1.todoList[0]).toBe(state.todoList[0]);
 
   // update title
-  const demo2 = immet.$setIn(demo1, ['todoList', 0, 'title'], 'C');
+  const demo2 = immot.$setIn(demo1, ['todoList', 0, 'title'], 'C');
 
   expect(demo2).toEqual({
     todoList: [
@@ -425,7 +441,7 @@ test('Test todo list', () => {
     ],
   });
 
-  const demo3 = immet.$updateIn(demo2, ['todoList', 0, 'complete'], (complete) => !complete);
+  const demo3 = immot.$updateIn(demo2, ['todoList', 0, 'complete'], (complete) => !complete);
 
   expect(demo3).toEqual({
     todoList: [
@@ -440,7 +456,7 @@ test('Test todo list', () => {
   });
 
   // delete
-  const demo4 = immet.$updateIn(demo3, ['todoList', 0], (todoItem) => immet.$delete(todoItem, 'complete'));
+  const demo4 = immot.$updateIn(demo3, ['todoList', 0], (todoItem) => immot.$delete(todoItem, 'complete'));
 
   expect(demo4).toEqual({
     todoList: [
