@@ -77,7 +77,7 @@ test('Test $setIn', () => {
     },
   };
 
-  const demo1 = immot.$setIn(demoData, ['info', 'sales', 'users', 'tom'] as const, '1');
+  const demo1 = immot.$setIn(demoData, ['info', 'sales', 'users', 'tom'] as const, 'bad');
 
   expect(demo1).toEqual({
     info: {

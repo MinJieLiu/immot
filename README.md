@@ -27,7 +27,7 @@ yarn add immot
 
 在 `React` 中，你不能这样做：
 
-```js
+```ts
 state.a.b.c = 1;
 // or...
 state.c.d.f.push(2);
@@ -35,7 +35,7 @@ state.c.d.f.push(2);
 
 通常，你会这样做：
 
-```js
+```ts
 const nextState = {
   ...state,
   a: {
@@ -50,8 +50,8 @@ const nextState = {
 
 现在有了 `immot`，让操作深层数据变得简单：
 
-```js
-const nextState = $setIn(state, ['a', 'b', 'c'], 1);
+```ts
+const nextState = $setIn(state, <const>['a', 'b', 'c'], 1);
 
 nextState === state;
 // false
@@ -67,23 +67,23 @@ nextState === state;
 
 ## 使用
 
-```js
+```ts
 import * as immot from 'immot';
 ```
 
 或者只导入其中某个函数
 
-```js
+```ts
 import { $updateIn } from 'immot';
 ```
 
-`immot`所有函数操作都会返回一个新的对象。
+`immot` 所有函数操作都会返回一个新的对象。
 
 ### $set
 
 用于设置 `对象/数组/Map` 中的属性值。`keyPath` 为字符串。
 
-```js
+```ts
 const result = immot.$set(demo, 'a', 1);
 ```
 
@@ -91,15 +91,15 @@ const result = immot.$set(demo, 'a', 1);
 
 用于设置 `对象/数组/Map` 中的属性值。它可以为深层对象做操作，`keyPath` 为路径数组
 
-```js
-const result = immot.$setIn(demo, ['a', 'b', 1, 'c'], 'good');
+```ts
+const result = immot.$setIn(demo, <const>['a', 'b', 1, 'c'], 'good');
 ```
 
 ### $merge
 
 用于合并 `对象/数组` 中的属性列表。
 
-```js
+```ts
 const result = immot.$merge(demo, { tom: 1, jack: 2 });
 
 const result1 = immot.$merge(demo1, [5, 6]);
@@ -109,15 +109,15 @@ const result1 = immot.$merge(demo1, [5, 6]);
 
 用于合并 `对象/数组` 中的属性列表。它可以为深层对象做操作，`keyPath` 为路径数组
 
-```js
-const result = immot.$mergeIn(demo, ['a', 1, 'b'], { tom: 1, jack: 2 });
+```ts
+const result = immot.$mergeIn(demo, <const>['a', 1, 'b'], { tom: 1, jack: 2 });
 ```
 
 ### $update
 
 通过回调函数设置 `对象/数组/Map` 中的属性值。`keyPath` 为字符串。
 
-```js
+```ts
 const result = immot.$update(demo, 'money', (prev) => prev + 1);
 ```
 
@@ -125,15 +125,15 @@ const result = immot.$update(demo, 'money', (prev) => prev + 1);
 
 通过回调函数设置 `对象/数组/Map` 中的属性值。它可以为深层对象做操作，`keyPath` 为路径数组
 
-```js
-const result = immot.$updateIn(demo, ['todoList', 0, 'complete'], (complete) => !complete);
+```ts
+const result = immot.$updateIn(demo, <const>['todoList', 0, 'complete'], (complete) => !complete);
 ```
 
 ### $delete
 
 用于删除 `对象/数组/Map` 中的可选属性值，`keyPath` 为字符串或者数组
 
-```js
+```ts
 const result = immot.$delete(demo, 'a1');
 const result1 = immot.$delete(demo, ['a1', 'a2']);
 ```
@@ -142,7 +142,7 @@ const result1 = immot.$delete(demo, ['a1', 'a2']);
 
 类似 `Array.prototype.push`，但返回新数组
 
-```js
+```ts
 const result = immot.$push(demo, 4);
 ```
 
@@ -150,7 +150,7 @@ const result = immot.$push(demo, 4);
 
 类似 `Array.prototype.pop`，但返回新数组
 
-```js
+```ts
 const result = immot.$pop(demo);
 ```
 
@@ -158,7 +158,7 @@ const result = immot.$pop(demo);
 
 类似 `Array.prototype.shift`，但返回新数组
 
-```js
+```ts
 const result = immot.$shift(demo);
 ```
 
@@ -166,7 +166,7 @@ const result = immot.$shift(demo);
 
 类似 `Array.prototype.unshift`，但返回新数组
 
-```js
+```ts
 const result = immot.$unshift(demo, 4);
 ```
 
@@ -174,7 +174,7 @@ const result = immot.$unshift(demo, 4);
 
 类似 `Array.prototype.splice`，但返回新数组
 
-```js
+```ts
 const result = immot.$splice(demo, 1, 0, 'test');
 ```
 
