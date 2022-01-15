@@ -8,7 +8,7 @@ const isArray = Array.isArray;
 
 function shadowAssign<S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Resolve1<S, KS>) {
   if (isArray(state)) {
-    const result = [...state] as unknown as S;
+    const result = state.slice(0) as unknown as S;
     result[keyPath as number] = value;
     return result;
   }
