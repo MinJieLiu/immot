@@ -169,6 +169,20 @@ test('Test $setIn', () => {
   expect(demoMap2.info.get('tom')).toBe(demoDataMap2.info.get('tom'));
   expect(demoMap2.property).toBe(demoDataMap2.property);
 
+  const demoMap3 = immot.$setIn(demoDataMap2, ['info', 'jack'] as const, { money: 20 });
+
+  expect(demoMap3).toEqual({
+    info: new Map([
+      ['jack', { money: 20 }],
+      ['tom', { money: 10 }],
+    ]),
+    property: [1],
+  });
+  expect(demoMap3.info).not.toBe(demoDataMap2.info);
+  expect(demoMap3.info.get('jack')).not.toBe(demoDataMap2.info.get('jack'));
+  expect(demoMap3.info.get('tom')).toBe(demoDataMap2.info.get('tom'));
+  expect(demoMap3.property).toBe(demoDataMap2.property);
+
   interface DemoData4 {
     info: {
       jack?: {
@@ -262,6 +276,26 @@ test('Test $mergeIn', () => {
     },
   });
   expect(demo2.info.money).not.toBe(demoData.info.money);
+
+  const demoMap1 = {
+    info: new Map([
+      ['jack', { money: 10, selected: [1, 2] }],
+      ['tom', { money: 10, selected: [2, 3] }],
+    ]),
+  };
+
+  const demoMap3 = immot.$mergeIn(demoMap1, ['info', 'jack'] as const, { money: 20 });
+
+  expect(demoMap3).toEqual({
+    info: new Map([
+      ['jack', { money: 20, selected: [1, 2] }],
+      ['tom', { money: 10, selected: [2, 3] }],
+    ]),
+  });
+  expect(demoMap3.info).not.toBe(demoMap1.info);
+  expect(demoMap3.info.get('jack')).not.toBe(demoMap1.info.get('jack'));
+  expect(demoMap3.info.get('jack')!.selected).toBe(demoMap1.info.get('jack')!.selected);
+  expect(demoMap3.info.get('tom')).toBe(demoMap1.info.get('tom'));
 });
 
 test('Test $update', () => {

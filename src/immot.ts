@@ -50,7 +50,7 @@ function baseUpdateIn<S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: 
   while (++index < pathLength) {
     const currKeyPath = keyPath[index] as string;
     const parent = pathState[index];
-    const cursor = parent?.[currKeyPath];
+    const cursor = isMap(parent) ? (parent as Map<string, Resolve<S, KS>>).get(currKeyPath) : parent?.[currKeyPath];
     if (index === pathLength - 1) {
       lastItem = cursor;
       break;
