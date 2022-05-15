@@ -108,22 +108,22 @@ export const $updateIn: UpdateInOperator = <S, KS>(state: S, keyPath: KS, update
   return baseUpdateIn(state, keyPath, updater);
 };
 
-export const $delete = <S>(state: S, key: DeleteFnPath<S>): S => {
+export const $delete = <S>(state: S, keyList: DeleteFnPath<S>): S => {
   if (isArray(state)) {
-    if (isArray(key)) {
-      return state.filter((n, i) => !key.includes(i)) as unknown as S;
+    if (isArray(keyList)) {
+      return state.filter((n, i) => !keyList.includes(i)) as unknown as S;
     }
-    return $splice(state, key as number, 1) as unknown as S;
+    return $splice(state, keyList as number, 1) as unknown as S;
   }
 
   if (isMap(state)) {
     const result = new Map(state as unknown as Map<unknown, unknown>);
-    if (isArray(key)) {
-      key.forEach((key) => {
+    if (isArray(keyList)) {
+      keyList.forEach((key) => {
         result.delete(key);
       });
     } else {
-      result.delete(key);
+      result.delete(keyList);
     }
     return result as unknown as S;
   }
@@ -131,7 +131,7 @@ export const $delete = <S>(state: S, key: DeleteFnPath<S>): S => {
   const result = {} as S;
   const keys = Object.keys(state);
   keys.forEach((key) => {
-    if (isArray(key) ? !key.includes(key) : key !== key) {
+    if (isArray(keyList) ? !keyList.includes(key) : keyList !== key) {
       result[key] = state[key];
     }
   });

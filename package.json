@@ -1,6 +1,6 @@
 {
   "name": "immot",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "Create a new copy without changing the original data.",
   "exports": "./dist/immot.modern.js",
