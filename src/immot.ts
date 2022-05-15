@@ -1,4 +1,12 @@
-import type { DeleteFnPath, KeyName, KeyPath, Resolve, Resolve1, Updater } from './types';
+import type {
+  DeleteFnPath,
+  Generic,
+  MergeInOperator,
+  PathValue,
+  SetInOperator,
+  UpdateInOperator,
+  Updater,
+} from './types';
 
 function isMap<T>(obj: T) {
   return obj instanceof Map;
@@ -6,7 +14,7 @@ function isMap<T>(obj: T) {
 
 const isArray = Array.isArray;
 
-function shadowAssign<S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Resolve1<S, KS>) {
+function shadowAssign<S, KS extends keyof Generic<S>>(state: S, keyPath: KS, value: PathValue<S, KS>) {
   if (isArray(state)) {
     const result = state.slice(0) as unknown as S;
     result[keyPath as number] = value;
@@ -18,9 +26,9 @@ function shadowAssign<S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Re
   return { ...state, [keyPath as string | symbol]: value };
 }
 
-function baseUpdate<S, KS extends KeyName<S>>(state: S, keyPath: KS, updater: Updater<Resolve1<S, KS>>): S {
+function baseUpdate<S, KS extends keyof Generic<S>>(state: S, keyPath: KS, updater: Updater<PathValue<S, KS>>): S {
   const origin = isMap(state)
-    ? ((state as unknown as Map<unknown, unknown>).get(keyPath) as Resolve1<S, KS>)
+    ? ((state as unknown as Map<unknown, unknown>).get(keyPath) as PathValue<S, KS>)
     : state[keyPath as string];
 
   const value = updater(origin);
@@ -41,16 +49,18 @@ function initKeyPath(key: string | number | symbol, value: unknown) {
   };
 }
 
-function baseUpdateIn<S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: Updater<Resolve<S, KS>>): S {
+function baseUpdateIn<S, K, U extends (arg: S) => any>(state: S, keyPath: K, updater: U) {
   let index = -1;
   let lastItem;
-  const pathState = [state] as Resolve<S, KS>[];
+  const pathState = [state];
   const pathLength = (keyPath as unknown as []).length as number;
 
   while (++index < pathLength) {
     const currKeyPath = keyPath[index] as string;
     const parent = pathState[index];
-    const cursor = isMap(parent) ? (parent as Map<string, Resolve<S, KS>>).get(currKeyPath) : parent?.[currKeyPath];
+    const cursor = isMap(parent)
+      ? (parent as unknown as Map<unknown, unknown>).get(currKeyPath)
+      : parent?.[currKeyPath];
     if (index === pathLength - 1) {
       lastItem = cursor;
       break;
@@ -62,26 +72,22 @@ function baseUpdateIn<S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: 
     return state;
   }
 
-  let result = value as S;
+  let result = value;
   let resultIndex = pathLength;
   // reverse order
   while (resultIndex-- > 0) {
-    const origin = pathState[resultIndex] as S;
-    const currKeyPath = keyPath[resultIndex] as KeyName<S>;
-    const current =
-      origin !== undefined
-        ? shadowAssign(origin, currKeyPath, result as Resolve1<S, KeyName<S>>)
-        : initKeyPath(currKeyPath as string, result);
-    result = current as S;
+    const origin = pathState[resultIndex];
+    const currKeyPath = keyPath[resultIndex];
+    result = origin !== undefined ? shadowAssign(origin, currKeyPath, result) : initKeyPath(currKeyPath, result);
   }
   return result;
 }
 
-export const $set = <S, KS extends KeyName<S>>(state: S, keyPath: KS, value: Resolve1<S, KS>): S => {
+export const $set = <S, KS extends keyof Generic<S>>(state: S, keyPath: KS, value: PathValue<S, KS>): S => {
   return baseUpdate(state, keyPath, () => value);
 };
 
-export const $setIn = <S, KS extends KeyPath<S>>(state: S, keyPath: KS, value: Resolve<S, KS>): S => {
+export const $setIn: SetInOperator = <S, KS>(state: S, keyPath: KS, value: PathValue<S, KS>): S => {
   return baseUpdateIn(state, keyPath, () => value);
 };
 
@@ -92,32 +98,32 @@ export const $merge = <S>(state: S, values: Partial<S>): S => {
   return { ...state, ...values };
 };
 
-export const $mergeIn = <S, KS extends KeyPath<S>>(state: S, keyPath: KS, values: Partial<Resolve<S, KS>>): S => {
+export const $mergeIn: MergeInOperator = <S, KS>(state: S, keyPath: KS, values: Partial<S>): S => {
   return baseUpdateIn(state, keyPath, (prev) => $merge(prev, values));
 };
 
 export const $update = baseUpdate;
 
-export const $updateIn = <S, KS extends KeyPath<S>>(state: S, keyPath: KS, updater: Updater<Resolve<S, KS>>): S => {
+export const $updateIn: UpdateInOperator = <S, KS>(state: S, keyPath: KS, updater: Updater<S>): S => {
   return baseUpdateIn(state, keyPath, updater);
 };
 
-export const $delete = <S>(state: S, keyPath: DeleteFnPath<S>): S => {
+export const $delete = <S>(state: S, key: DeleteFnPath<S>): S => {
   if (isArray(state)) {
-    if (isArray(keyPath)) {
-      return state.filter((n, i) => !keyPath.includes(i)) as unknown as S;
+    if (isArray(key)) {
+      return state.filter((n, i) => !key.includes(i)) as unknown as S;
     }
-    return $splice(state, keyPath as number, 1) as unknown as S;
+    return $splice(state, key as number, 1) as unknown as S;
   }
 
   if (isMap(state)) {
     const result = new Map(state as unknown as Map<unknown, unknown>);
-    if (isArray(keyPath)) {
-      keyPath.forEach((key) => {
+    if (isArray(key)) {
+      key.forEach((key) => {
         result.delete(key);
       });
     } else {
-      result.delete(keyPath);
+      result.delete(key);
     }
     return result as unknown as S;
   }
@@ -125,7 +131,7 @@ export const $delete = <S>(state: S, keyPath: DeleteFnPath<S>): S => {
   const result = {} as S;
   const keys = Object.keys(state);
   keys.forEach((key) => {
-    if (isArray(keyPath) ? !keyPath.includes(key) : keyPath !== key) {
+    if (isArray(key) ? !key.includes(key) : key !== key) {
       result[key] = state[key];
     }
   });

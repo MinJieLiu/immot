@@ -1,103 +1,297 @@
-type valueOf<T> = T[keyof T];
+// @ts-ignore
+type Generic<T> = T extends Map<infer K, infer V> ? { [P in K]: V } : T;
 
-// prettier-ignore
-type KeyName<D> =
-  D extends [] ? number :
-    D extends Map<infer MK, infer MV> ? MK :
-      D extends object ? keyof D :
-        never;
+// @ts-ignore
+type PathValue<V, K> = Generic<V>[K];
 
-// prettier-ignore
-type KeyPath<D> =
-  D extends (infer L)[] ? readonly[number] | KeyPath2<number, L> :
-    D extends Set<infer S> ? readonly[S] | KeyPath2<S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[MK] | KeyPath2<MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[Key] | KeyPath2<Key, D[Key]> }> :
-          never
+type KeyPath1<T, K1> = NonNullable<PathValue<NonNullable<T>, K1>>;
 
-// prettier-ignore
-type KeyPath2<K1, D> =
-  D extends (infer L)[] ? readonly[K1, number] | KeyPath3<K1, number, L> :
-    D extends Set<infer S> ? readonly[K1, S] | KeyPath3<K1, S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[K1, MK] | KeyPath3<K1, MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, Key] | KeyPath3<K1, Key, D[Key]> }> :
-          never
+type KeyPath2<T, K1, K2> = NonNullable<PathValue<KeyPath1<T, K1>, K2>>;
 
-// prettier-ignore
-type KeyPath3<K1, K2, D> =
-  D extends (infer L)[] ? readonly[K1, K2, number] | KeyPath4<K1, K2, number, L> :
-    D extends Set<infer S> ? readonly[K1, K2, S] | KeyPath4<K1, K2, S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[K1, K2, MK] | KeyPath4<K1, K2, MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, K2, Key] | KeyPath4<K1, K2, Key, D[Key]> }> :
-          never
+type KeyPath3<T, K1, K2, K3> = NonNullable<PathValue<KeyPath2<T, K1, K2>, K3>>;
 
-// prettier-ignore
-type KeyPath4<K1, K2, K3, D> =
-  D extends (infer L)[] ? readonly[K1, K2, K3, number] | KeyPath5<K1, K2, K3, number, L> :
-    D extends Set<infer S> ? readonly[K1, K2, K3, S] | KeyPath5<K1, K2, K3, S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[K1, K2, K3, MK] | KeyPath5<K1, K2, K3, MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, K2, K3, Key] | KeyPath5<K1, K2, K3, Key, D[Key]> }> :
-          never
+type KeyPath4<T, K1, K2, K3, K4> = NonNullable<PathValue<KeyPath3<T, K1, K2, K3>, K4>>;
 
-// prettier-ignore
-type KeyPath5<K1, K2, K3, K4, D> =
-  D extends (infer L)[] ? readonly[K1, K2, K3, K4, number] | KeyPath6<K1, K2, K3, K4, number, L> :
-    D extends Set<infer S> ? readonly[K1, K2, K3, K4, S] | KeyPath6<K1, K2, K3, K4, S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[K1, K2, K3, K4, MK] | KeyPath6<K1, K2, K3, K4, MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, K2, K3, K4, Key] | KeyPath6<K1, K2, K3, K4, Key, D[Key]> }> :
-          never
+type KeyPath5<T, K1, K2, K3, K4, K5> = NonNullable<PathValue<KeyPath4<T, K1, K2, K3, K4>, K5>>;
 
-// prettier-ignore
-type KeyPath6<K1, K2, K3, K4, K5, D> =
-  D extends (infer L)[] ? readonly[K1, K2, K3, K4, K5, number] | KeyPath7<K1, K2, K3, K4, K5, number, L> :
-    D extends Set<infer S> ? readonly[K1, K2, K3, K4, K5, S] | KeyPath7<K1, K2, K3, K4, K5, S, S> :
-      D extends Map<infer MK, infer MV> ? readonly[K1, K2, K3, K4, K5, MK] | KeyPath7<K1, K2, K3, K4, K5, MK, MV> :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, K2, K3, K4, K5, Key] | KeyPath7<K1, K2, K3, K4, K5, Key, D[Key]> }> :
-          never
+type KeyPath6<T, K1, K2, K3, K4, K5, K6> = NonNullable<PathValue<KeyPath5<T, K1, K2, K3, K4, K5>, K6>>;
 
-// prettier-ignore
-type KeyPath7<K1, K2, K3, K4, K5, K6, D> =
-  D extends any[] ? readonly[K1, K2, K3, K4, K5, K6, number] :
-    D extends Set<infer S> ? readonly[K1, K2, K3, K4, K5, K6, S] :
-      D extends Map<infer MK, any> ? readonly[K1, K2, K3, K4, K5, K6, MK] :
-        D extends object ? valueOf<{ [Key in keyof D]: readonly[K1, K2, K3, K4, K5, K6, Key] }> :
-          never
+type ValuePath1<T, K1> = PathValue<NonNullable<T>, K1>;
 
-/* prettier-ignore */
-type Resolve1<D, K1> =
-  D extends (infer L)[] ? (K1 extends number ? L : never) :
-    D extends Map<infer MK, infer MV> ? (K1 extends MK ? MV : never) :
-      D extends object ? (K1 extends keyof D ? D[K1] : never) :
-        never
+type ValuePath2<T, K1, K2> = PathValue<KeyPath1<T, K1>, K2>;
 
-// prettier-ignore
-type Resolve2<D, K1, K2> = Resolve1<Resolve1<D, K1>, K2>;
-// prettier-ignore
-type Resolve3<D, K1, K2, K3> = Resolve1<Resolve2<D, K1, K2>, K3>;
-// prettier-ignore
-type Resolve4<D, K1, K2, K3, K4> = Resolve1<Resolve3<D, K1, K2, K3>, K4>;
-// prettier-ignore
-type Resolve5<D, K1, K2, K3, K4, K5> = Resolve1<Resolve4<D, K1, K2, K3, K4>, K5>
-// prettier-ignore
-type Resolve6<D, K1, K2, K3, K4, K5, K6> = Resolve1<Resolve5<D, K1, K2, K3, K4, K5>, K6>
-// prettier-ignore
-type Resolve7<D, K1, K2, K3, K4, K5, K6, K7> = Resolve1<Resolve6<D, K1, K2, K3, K4, K5, K6>, K7>
+type ValuePath3<T, K1, K2, K3> = PathValue<KeyPath2<T, K1, K2>, K3>;
 
-type Resolve<D, KS> = KS extends readonly [infer K1]
-  ? Resolve1<D, K1>
-  : KS extends readonly [infer K1, infer K2]
-  ? Resolve2<D, K1, K2>
-  : KS extends readonly [infer K1, infer K2, infer K3]
-  ? Resolve3<D, K1, K2, K3>
-  : KS extends readonly [infer K1, infer K2, infer K3, infer K4]
-  ? Resolve4<D, K1, K2, K3, K4>
-  : KS extends readonly [infer K1, infer K2, infer K3, infer K4, infer K5]
-  ? Resolve5<D, K1, K2, K3, K4, K5>
-  : KS extends readonly [infer K1, infer K2, infer K3, infer K4, infer K5, infer K6]
-  ? Resolve6<D, K1, K2, K3, K4, K5, K6>
-  : KS extends readonly [infer K1, infer K2, infer K3, infer K4, infer K5, infer K6, infer K7]
-  ? Resolve7<D, K1, K2, K3, K4, K5, K6, K7>
-  : never;
+type ValuePath4<T, K1, K2, K3, K4> = PathValue<KeyPath3<T, K1, K2, K3>, K4>;
+
+type ValuePath5<T, K1, K2, K3, K4, K5> = PathValue<KeyPath4<T, K1, K2, K3, K4>, K5>;
+
+type ValuePath6<T, K1, K2, K3, K4, K5, K6> = PathValue<KeyPath5<T, K1, K2, K3, K4, K5>, K6>;
+
+type ValuePath7<T, K1, K2, K3, K4, K5, K6, K7> = PathValue<KeyPath6<T, K1, K2, K3, K4, K5, K6>, K7>;
+
+interface MergeInOperator {
+  <T, K1 extends keyof Generic<NonNullable<T>>, V extends ValuePath1<T, K1>>(
+    state: T,
+    path: [K1],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    V extends ValuePath2<T, K1, K2>
+  >(
+    state: T,
+    path: [K1, K2],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    V extends ValuePath3<T, K1, K2, K3>
+  >(
+    state: T,
+    path: [K1, K2, K3],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    V extends ValuePath4<T, K1, K2, K3, K4>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    V extends ValuePath5<T, K1, K2, K3, K4, K5>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    V extends ValuePath6<T, K1, K2, K3, K4, K5, K6>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6],
+    value: Partial<V>
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    K7 extends keyof Generic<KeyPath6<T, K1, K2, K3, K4, K5, K6>>,
+    V extends ValuePath7<T, K1, K2, K3, K4, K5, K6, K7>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6, K7],
+    value: Partial<V>
+  ): T;
+}
+
+interface SetInOperator {
+  <T, K1 extends keyof Generic<NonNullable<T>>, V extends ValuePath1<T, K1>>(state: T, path: [K1], value: V): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    V extends ValuePath2<T, K1, K2>
+  >(
+    state: T,
+    path: [K1, K2],
+    value: V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    V extends ValuePath3<T, K1, K2, K3>
+  >(
+    state: T,
+    path: [K1, K2, K3],
+    value: V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    V extends ValuePath4<T, K1, K2, K3, K4>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4],
+    value: V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    V extends ValuePath5<T, K1, K2, K3, K4, K5>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5],
+    value: V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    V extends ValuePath6<T, K1, K2, K3, K4, K5, K6>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6],
+    value: V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    K7 extends keyof Generic<KeyPath6<T, K1, K2, K3, K4, K5, K6>>,
+    V extends ValuePath7<T, K1, K2, K3, K4, K5, K6, K7>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6, K7],
+    value: V
+  ): T;
+}
+
+interface UpdateInOperator {
+  <T, K1 extends keyof Generic<NonNullable<T>>, V extends ValuePath1<T, K1>>(
+    state: T,
+    path: [K1],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    V extends ValuePath2<T, K1, K2>
+  >(
+    state: T,
+    path: [K1, K2],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    V extends ValuePath3<T, K1, K2, K3>
+  >(
+    state: T,
+    path: [K1, K2, K3],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    V extends ValuePath4<T, K1, K2, K3, K4>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    V extends ValuePath5<T, K1, K2, K3, K4, K5>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    V extends ValuePath6<T, K1, K2, K3, K4, K5, K6>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6],
+    value: (prev: V) => V
+  ): T;
+
+  <
+    T,
+    K1 extends keyof Generic<NonNullable<T>>,
+    K2 extends keyof Generic<KeyPath1<T, K1>>,
+    K3 extends keyof Generic<KeyPath2<T, K1, K2>>,
+    K4 extends keyof Generic<KeyPath3<T, K1, K2, K3>>,
+    K5 extends keyof Generic<KeyPath4<T, K1, K2, K3, K4>>,
+    K6 extends keyof Generic<KeyPath5<T, K1, K2, K3, K4, K5>>,
+    K7 extends keyof Generic<KeyPath6<T, K1, K2, K3, K4, K5, K6>>,
+    V extends ValuePath7<T, K1, K2, K3, K4, K5, K6, K7>
+  >(
+    state: T,
+    path: [K1, K2, K3, K4, K5, K6, K7],
+    value: (prev: V) => V
+  ): T;
+}
 
 type NullableKeys<T> = { [K in keyof T]-?: undefined extends T[K] ? K : never }[keyof T];
 
@@ -109,4 +303,4 @@ type DeleteFnPath<S> = S extends []
 
 type Updater<T> = (prev: T) => T;
 
-export type { KeyName, KeyPath, Resolve, Resolve1, DeleteFnPath, Updater };
+export type { DeleteFnPath, Generic, MergeInOperator, PathValue, SetInOperator, UpdateInOperator, Updater };

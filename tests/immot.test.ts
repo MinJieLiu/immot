@@ -77,7 +77,7 @@ test('Test $setIn', () => {
     },
   };
 
-  const demo1 = immot.$setIn(demoData, ['info', 'sales', 'users', 'tom'] as const, 'bad');
+  const demo1 = immot.$setIn(demoData, ['info', 'sales', 'users', 'tom'], 'bad');
 
   expect(demo1).toEqual({
     info: {
@@ -97,7 +97,7 @@ test('Test $setIn', () => {
   expect(demo1.info.products).toBe(demoData.info.products);
   expect(demo1.info.sales.money).toBe(demoData.info.sales.money);
 
-  const demo2 = immot.$setIn(demoData, ['info', 'sales', 'money', 1] as const, 500);
+  const demo2 = immot.$setIn(demoData, ['info', 'sales', 'money', 1], 500);
 
   expect(demo2).toEqual({
     info: {
@@ -116,14 +116,14 @@ test('Test $setIn', () => {
   expect(demo2.info.sales.users).toBe(demoData.info.sales.users);
   expect(demoData.info.sales.money).toBeUndefined();
 
-  const demo3 = immot.$setIn(demo2, ['info', 'sales', 'money', 1] as const, 500);
+  const demo3 = immot.$setIn(demo2, ['info', 'sales', 'money', 1], 500);
   expect(demo3).toBe(demo2);
 
   const profile = {
     userList: [{ username: 'jack' }],
   };
 
-  const nextProfile = immot.$setIn(profile, ['userList', 1, 'username'] as const, 'tom');
+  const nextProfile = immot.$setIn(profile, ['userList', 1, 'username'], 'tom');
 
   expect(nextProfile).toEqual({
     userList: [{ username: 'jack' }, { username: 'tom' }],
@@ -138,7 +138,7 @@ test('Test $setIn', () => {
     ]),
   };
 
-  const demoMap1 = immot.$setIn(demoDataMap, ['info', 'jack'] as const, 20);
+  const demoMap1 = immot.$setIn(demoDataMap, ['info', 'jack'], 20);
 
   expect(demoMap1).toEqual({
     info: new Map([
@@ -155,7 +155,7 @@ test('Test $setIn', () => {
     property: [1],
   };
 
-  const demoMap2 = immot.$setIn(demoDataMap2, ['info', 'jack', 'money'] as const, 20);
+  const demoMap2 = immot.$setIn(demoDataMap2, ['info', 'jack', 'money'], 20);
 
   expect(demoMap2).toEqual({
     info: new Map([
@@ -169,7 +169,7 @@ test('Test $setIn', () => {
   expect(demoMap2.info.get('tom')).toBe(demoDataMap2.info.get('tom'));
   expect(demoMap2.property).toBe(demoDataMap2.property);
 
-  const demoMap3 = immot.$setIn(demoDataMap2, ['info', 'jack'] as const, { money: 20 });
+  const demoMap3 = immot.$setIn(demoDataMap2, ['info', 'jack'], { money: 20 });
 
   expect(demoMap3).toEqual({
     info: new Map([
@@ -202,13 +202,13 @@ test('Test $setIn', () => {
     },
   };
 
-  const demo4 = immot.$setIn(demoData4, ['info', 'jack'] as const, undefined);
+  const demo4 = immot.$setIn(demoData4, ['info', 'jack'], undefined);
   expect(demo4).toEqual({
     info: {
       jack: undefined,
     },
   });
-  const demo5 = immot.$setIn(demo4, ['info', 'tom', 'money'] as const, 10);
+  const demo5 = immot.$setIn(demo4, ['info', 'tom', 'money'], 10);
   expect(demo5).toEqual({
     info: {
       jack: undefined,
@@ -216,6 +216,11 @@ test('Test $setIn', () => {
         money: 10,
       },
     },
+  });
+
+  const demo6 = immot.$setIn(demoData4.info, ['jack'], undefined);
+  expect(demo6).toEqual({
+    jack: undefined,
   });
 });
 
@@ -249,7 +254,7 @@ test('Test $mergeIn', () => {
     },
   };
 
-  const demo1 = immot.$mergeIn(demoData, ['info', 'users'] as const, {
+  const demo1 = immot.$mergeIn(demoData, ['info', 'users'], {
     tom: 'bad',
   });
   expect(demo1).toEqual({
@@ -265,7 +270,7 @@ test('Test $mergeIn', () => {
   expect(demo1.info.users).not.toBe(demoData.info.users);
   expect(demo1.info.money).toBe(demoData.info.money);
 
-  const demo2 = immot.$mergeIn(demoData, ['info', 'money'] as const, [400]);
+  const demo2 = immot.$mergeIn(demoData, ['info', 'money'], [400]);
 
   expect(demo2).toEqual({
     info: {
@@ -284,7 +289,7 @@ test('Test $mergeIn', () => {
     ]),
   };
 
-  const demoMap3 = immot.$mergeIn(demoMap1, ['info', 'jack'] as const, { money: 20 });
+  const demoMap3 = immot.$mergeIn(demoMap1, ['info', 'jack'], { money: 20 });
 
   expect(demoMap3).toEqual({
     info: new Map([
@@ -319,7 +324,7 @@ test('Test $updateIn', () => {
     ],
   };
 
-  const demo1 = immot.$updateIn(demoData, ['money', 0, 'user'] as const, (prev) => `${prev} & jerry`);
+  const demo1 = immot.$updateIn(demoData, ['money', 0, 'user'], (prev) => `${prev} & jerry`);
   expect(demo1).toEqual({
     money: [
       {
@@ -329,7 +334,7 @@ test('Test $updateIn', () => {
   });
   expect(demo1).not.toBe(demoData);
 
-  const demo2 = immot.$updateIn(demoData, ['money', 1, 'user'] as const, () => 'jerry');
+  const demo2 = immot.$updateIn(demoData, ['money', 1, 'user'], () => 'jerry');
   expect(demo2).toEqual({
     money: [
       {
@@ -464,7 +469,7 @@ test('Test todo list', () => {
   expect(demo1.todoList[0]).toBe(state.todoList[0]);
 
   // update title
-  const demo2 = immot.$setIn(demo1, ['todoList', 0, 'title'] as const, 'C');
+  const demo2 = immot.$setIn(demo1, ['todoList', 0, 'title'], 'C');
 
   expect(demo2).toEqual({
     todoList: [
@@ -477,7 +482,7 @@ test('Test todo list', () => {
     ],
   });
 
-  const demo3 = immot.$updateIn(demo2, ['todoList', 0, 'complete'] as const, (complete) => !complete);
+  const demo3 = immot.$updateIn(demo2, ['todoList', 0, 'complete'], (complete) => !complete);
 
   expect(demo3).toEqual({
     todoList: [
@@ -492,7 +497,7 @@ test('Test todo list', () => {
   });
 
   // delete
-  const demo4 = immot.$updateIn(demo3, ['todoList', 0] as const, (todoItem) => immot.$delete(todoItem, 'complete'));
+  const demo4 = immot.$updateIn(demo3, ['todoList', 0], (todoItem) => immot.$delete(todoItem, 'complete'));
 
   expect(demo4).toEqual({
     todoList: [
