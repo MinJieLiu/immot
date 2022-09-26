@@ -12,7 +12,7 @@ function isMap<T>(obj: T) {
   return obj instanceof Map;
 }
 
-const isArray = Array.isArray;
+const { isArray } = Array;
 
 function shadowAssign<S, KS extends keyof Generic<S>>(state: S, keyPath: KS, value: PathValue<S, KS>) {
   if (isArray(state)) {
@@ -54,6 +54,9 @@ function baseUpdateIn<S, K, U extends (arg: S) => any>(state: S, keyPath: K, upd
   let lastItem;
   const pathState = [state];
   const pathLength = (keyPath as unknown as []).length as number;
+  if (!pathLength) {
+    return updater(state);
+  }
 
   while (++index < pathLength) {
     const currKeyPath = keyPath[index] as string;
@@ -108,6 +111,28 @@ export const $updateIn: UpdateInOperator = <S, KS>(state: S, keyPath: KS, update
   return baseUpdateIn(state, keyPath, updater);
 };
 
+export const $push = <S>(state: S[], ...values: S[]): S[] => {
+  return state.concat(values) as S[];
+};
+
+export const $pop = <S>(state: S[]): S[] => {
+  return state.slice(0, -1);
+};
+
+export const $shift = <S>(state: S[]): S[] => {
+  return state.slice(1);
+};
+
+export const $unshift = <S>(state: S[], ...values: S[]): S[] => {
+  return values.concat(state);
+};
+
+export const $splice = <S>(state: S[], start: number, deleteCount: number, ...values: S[]): S[] => {
+  const next = [...state];
+  next.splice(start, deleteCount, ...values);
+  return next;
+};
+
 export const $delete = <S>(state: S, keyList: DeleteFnPath<S>): S => {
   if (isArray(state)) {
     if (isArray(keyList)) {
@@ -136,26 +161,4 @@ export const $delete = <S>(state: S, keyList: DeleteFnPath<S>): S => {
     }
   });
   return result;
-};
-
-export const $push = <S>(state: S[], ...values: S[]): S[] => {
-  return state.concat(values) as S[];
-};
-
-export const $pop = <S>(state: S[]): S[] => {
-  return state.slice(0, -1);
-};
-
-export const $shift = <S>(state: S[]): S[] => {
-  return state.slice(1);
-};
-
-export const $unshift = <S>(state: S[], ...values: S[]): S[] => {
-  return values.concat(state);
-};
-
-export const $splice = <S>(state: S[], start: number, deleteCount: number, ...values: S[]): S[] => {
-  const next = [...state];
-  next.splice(start, deleteCount, ...values);
-  return next;
 };

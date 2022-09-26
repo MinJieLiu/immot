@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   '@types/jest': ^27.0.3
@@ -13,7 +13,7 @@ devDependencies:
   jest: 27.4.7_ts-node@9.1.1
   microbundle: 0.14.2_ts-node@9.1.1
   prettier: 2.5.1
-  ts-jest: 27.1.3_@types+jest@27.4.0+jest@27.4.7
+  ts-jest: 27.1.3_iwncgycowt2l62cuntoxk37hka
   ts-node: 9.1.1
 
 packages:
@@ -307,6 +307,8 @@ packages:
     resolution: {integrity: sha512-i7jDUfrVBWc+7OKcBzEe5n7fbv3i2fWtxKzzCvOjnzSxMfWMigAhtfJ7qzZNGFNMsCCd67+uz553dYKWXPvCKw==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.16.8
     dev: true
 
   /@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression/7.16.7_@babel+core@7.16.7:
@@ -1507,7 +1509,7 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /@rollup/plugin-babel/5.3.0_@babel+core@7.16.7+rollup@2.64.0:
+  /@rollup/plugin-babel/5.3.0_e3iurkddvdhm6x4lmww7sdg7tm:
     resolution: {integrity: sha512-9uIC8HZOnVLrLHxayq/PTzw+uS25E14KPUBh5ktF+18Mjo5yK0ToMMx6epY0uEgkjwJw0aBW4x2horYXh8juWw==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
@@ -2697,6 +2699,7 @@ packages:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -3808,7 +3811,7 @@ packages:
       '@babel/preset-flow': 7.16.7_@babel+core@7.16.7
       '@babel/preset-react': 7.16.7_@babel+core@7.16.7
       '@rollup/plugin-alias': 3.1.9_rollup@2.64.0
-      '@rollup/plugin-babel': 5.3.0_@babel+core@7.16.7+rollup@2.64.0
+      '@rollup/plugin-babel': 5.3.0_e3iurkddvdhm6x4lmww7sdg7tm
       '@rollup/plugin-commonjs': 17.1.0_rollup@2.64.0
       '@rollup/plugin-json': 4.1.0_rollup@2.64.0
       '@rollup/plugin-node-resolve': 11.2.1_rollup@2.64.0
@@ -3830,9 +3833,9 @@ packages:
       pretty-bytes: 5.6.0
       rollup: 2.64.0
       rollup-plugin-bundle-size: 1.0.3
-      rollup-plugin-postcss: 4.0.2_postcss@8.4.5+ts-node@9.1.1
+      rollup-plugin-postcss: 4.0.2_dr7kiwxb7sphkzdgi7nfggrnbq
       rollup-plugin-terser: 7.0.2_rollup@2.64.0
-      rollup-plugin-typescript2: 0.29.0_rollup@2.64.0+typescript@4.5.4
+      rollup-plugin-typescript2: 0.29.0_nqqot6acxwhixb5sgyynike7tu
       sade: 1.8.1
       terser: 5.10.0
       tiny-glob: 0.2.9
@@ -3840,7 +3843,6 @@ packages:
       typescript: 4.5.4
     transitivePeerDependencies:
       - '@types/babel__core'
-      - acorn
       - supports-color
       - ts-node
     dev: true
@@ -4651,7 +4653,7 @@ packages:
       maxmin: 2.1.0
     dev: true
 
-  /rollup-plugin-postcss/4.0.2_postcss@8.4.5+ts-node@9.1.1:
+  /rollup-plugin-postcss/4.0.2_dr7kiwxb7sphkzdgi7nfggrnbq:
     resolution: {integrity: sha512-05EaY6zvZdmvPUDi3uCcAQoESDcYnv8ogJJQRp6V5kZ6J6P7uAVJlrTZcaaA20wTH527YTnKfkAoPxWI/jPp4w==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -4685,11 +4687,9 @@ packages:
       rollup: 2.64.0
       serialize-javascript: 4.0.0
       terser: 5.10.0
-    transitivePeerDependencies:
-      - acorn
     dev: true
 
-  /rollup-plugin-typescript2/0.29.0_rollup@2.64.0+typescript@4.5.4:
+  /rollup-plugin-typescript2/0.29.0_nqqot6acxwhixb5sgyynike7tu:
     resolution: {integrity: sha512-YytahBSZCIjn/elFugEGQR5qTsVhxhUwGZIsA9TmrSsC88qroGo65O5HZP/TTArH2dm0vUmYWhKchhwi2wL9bw==}
     peerDependencies:
       rollup: '>=1.26.3'
@@ -5007,12 +5007,11 @@ packages:
     resolution: {integrity: sha512-AMmF99DMfEDiRJfxfY5jj5wNH/bYO09cniSqhfoyxc8sFoYIgkJy86G04UoZU5VjlpnplVu0K6Tx6E9b5+DlHA==}
     engines: {node: '>=10'}
     hasBin: true
-    peerDependencies:
-      acorn: ^8.5.0
     peerDependenciesMeta:
       acorn:
         optional: true
     dependencies:
+      acorn: 8.7.0
       commander: 2.20.3
       source-map: 0.7.3
       source-map-support: 0.5.21
@@ -5074,7 +5073,7 @@ packages:
       punycode: 2.1.1
     dev: true
 
-  /ts-jest/27.1.3_@types+jest@27.4.0+jest@27.4.7:
+  /ts-jest/27.1.3_iwncgycowt2l62cuntoxk37hka:
     resolution: {integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true

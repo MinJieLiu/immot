@@ -117,6 +117,8 @@ interface MergeInOperator {
     path: [K1, K2, K3, K4, K5, K6, K7],
     value: Partial<V>
   ): T;
+
+  <T>(state: T, path: unknown[], value: Partial<unknown>): unknown;
 }
 
 interface SetInOperator {
@@ -202,6 +204,8 @@ interface SetInOperator {
     path: [K1, K2, K3, K4, K5, K6, K7],
     value: V
   ): T;
+
+  <T>(state: T, path: unknown[], value: unknown): unknown;
 }
 
 interface UpdateInOperator {
@@ -291,6 +295,8 @@ interface UpdateInOperator {
     path: [K1, K2, K3, K4, K5, K6, K7],
     value: (prev: V) => V
   ): T;
+
+  <T>(state: T, path: unknown[], value: (prev: any) => unknown): unknown;
 }
 
 type NullableKeys<T> = { [K in keyof T]-?: undefined extends T[K] ? K : never }[keyof T];
